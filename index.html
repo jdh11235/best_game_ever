@@ -209,9 +209,9 @@
 				Fasterclick.attach(elm, Game.start);
 			});
 
-			Fasterclick.attach(window, function() {
-				Game.stat.log('clicked');
-			});
+			// Fasterclick.attach(window, function() {
+			// 	Game.stat.log('clicked');
+			// });
 
 			if (!localStorage.stats) {
 				localStorage.stat_win = 0;
@@ -292,14 +292,17 @@
 				touchWrapper: function(event, uid) {
 					Fasterclick.cache.touch_queue[uid]++;
 					Fasterclick.cache.callback[uid](event);
+					console.log('touch: ' + uid);
 				},
 
 				//send click event (only if touch event has not fired first)
 				clickWrapper: function(event, uid) {
 					if (Fasterclick.cache.touch_queue[uid] > 0) {
 						Fasterclick.cache.touch_queue[uid]--;
+						console.log('click false: ' + uid);
 					} else {
 						Fasterclick.cache.callback[uid](event);
+						console.log('click true: ' + uid);
 					}
 				},
 
