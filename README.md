@@ -1,6 +1,7 @@
 # Best Game Ever
 
-The pinnacle of gaming as we know it.
+The pinnacle of gaming as we know it!
+Seriously, this is the best game you've ever played.
 
 <http://git.io/bestgameever>
 
