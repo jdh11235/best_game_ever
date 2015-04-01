@@ -5,8 +5,58 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
 	<title>Best Game Ever</title>
+
+	<style>
+
+		body {
+			background: #2d2d2d;
+			color: #f9f9f9;
+			margin: 0;
+			padding: 0;
+		}
+
+		#game {
+			background: orange;
+			color: #2d2d2d;
+			width: 20vh;
+			height: 20vh;
+			position: fixed;
+			left: 40vw;
+			top: 40vh;
+			text-align: center;
+			font: 2em monospace;
+			cursor: pointer;
+		}
+
+	</style>
 </head>
 <body>
+
+	<div id="meta"></div>
+
+	div#stats
+
+	<div id="game">
+
+		<div class="message" id="default">
+			<b>?</b>
+			<br>
+			[click to start game]
+		</div>
+
+		<div class="message" id="win" hidden>
+			<b>You Lost!</b>
+			<br>
+			[click to retry]
+		</div>
+
+		<div class="message" id="lose" hidden>
+			<b>You Won!</b>
+			<br>
+			[click to play again]
+		</div>
+
+	</div>
 
 </body>
 </html>
