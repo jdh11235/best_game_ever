@@ -15,17 +15,39 @@
 			padding: 0;
 		}
 
-		#game {
-			background: orange;
+		.noselect {
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+		}
+
+		.game {
 			color: #2d2d2d;
-			width: 20vh;
-			height: 20vh;
+			width: 40vh;
+			height: 40vh;
 			position: fixed;
-			left: 40vw;
-			top: 40vh;
+			left: 50vw;
+			top: 50vh;
 			text-align: center;
 			font: 2em monospace;
 			cursor: pointer;
+			margin-left: -20vh;
+			margin-top: -20vh;
+		}
+
+		#default {
+			background: gray;
+		}
+
+		#win {
+			background: skyblue;
+		}
+
+		#lose {
+			background: orange;
 		}
 
 	</style>
@@ -34,29 +56,103 @@
 
 	<div id="meta"></div>
 
-	div#stats
+	<div id="stats"></div>
 
-	<div id="game">
 
-		<div class="message" id="default">
-			<b>?</b>
-			<br>
-			[click to start game]
-		</div>
-
-		<div class="message" id="win" hidden>
-			<b>You Lost!</b>
-			<br>
-			[click to retry]
-		</div>
-
-		<div class="message" id="lose" hidden>
-			<b>You Won!</b>
-			<br>
-			[click to play again]
-		</div>
-
+	<div class="message game noselect" id="default">
+		<b>?</b><br>
+		[click to start game]
 	</div>
 
+	<div class="message game noselect" id="win" hidden>
+		<b>You Won!</b><br>
+		[click to play again]
+	</div>
+
+	<div class="message game noselect" id="lose" hidden>
+		<b>You Lost!</b><br>
+		[click to retry]
+	</div>
+
+	<script>
+
+		var Game = (function() {
+
+			var elms = {
+				all: document.querySelectorAll('.message'),
+				states: {
+					default: document.querySelector('#default'),
+					win: document.querySelector('#win'),
+					lose: document.querySelector('#lose')
+				}
+			};
+
+			var outcomes = ['win', 'lose'];
+
+			function randomFromRange (min, max) {
+				return Math.round(Math.random() * (max - min) + min);
+			}
+
+			function randomChoice(choices) {
+				return choices[randomFromRange(0, choices.length - 1)];
+			}
+
+			function hideElement(elm) {
+				elm.setAttribute('hidden', '');
+			}
+
+			function showElement(elm) {
+				elm.removeAttribute('hidden');
+			}
+
+			var Game = {
+
+				message: function(id) {
+					if (elms.states[id]) {
+						[].forEach.call(elms.all, hideElement);
+						showElement(elms.states[id]);
+					} else {
+						return 'Not a valid message id. Try one of these: ' + JSON.parse(elms.states);
+					}
+				},
+
+				start: function() {
+					if (Game.state === 'default') {
+						Game.state = randomChoice(outcomes);
+						Game.message(Game.state);
+						Game.stat.log(Game.state);
+					} else {
+						Game.state = 'default'
+						Game.message(Game.state);
+					}
+				},
+
+				stat: {
+
+					log: function(state) {
+						console.log(state);
+					},
+
+					get: function() {}
+
+				},
+
+				state: 'default'
+
+			};
+
+			return Game;
+
+		})();
+
+		function init() {
+			[].forEach.call(document.querySelectorAll('.game'), function(elm) {
+				elm.addEventListener('click', Game.start);
+			});
+		}
+
+		window.addEventListener('load', init);
+
+	</script>
 </body>
 </html>
