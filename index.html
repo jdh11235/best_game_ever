@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+	<title>Best Game Ever</title>
+
+	<style>
+
+		body {
+			background: #2d2d2d;
+			color: #f9f9f9;
+			margin: 0;
+			padding: 0;
+			font-family: sans-serif;
+		}
+
+		a {
+			color: skyblue;
+		}
+
+		.noselect {
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+		}
+
+		.game {
+			color: #2d2d2d;
+			width: 40vh;
+			height: 40vh;
+			position: fixed;
+			left: 50vw;
+			top: 50vh;
+			text-align: center;
+			font: 2em monospace;
+			cursor: pointer;
+			margin-left: -20vh;
+			margin-top: -20vh;
+		}
+
+		.header {
+			position: fixed;
+			top: 0;
+		}
+
+		#default {
+			background: gray;
+		}
+
+		#win {
+			background: skyblue;
+		}
+
+		#lose {
+			background: orange;
+		}
+
+		#stats {
+			left: 0;
+		}
+
+		#meta {
+			right: 0;
+			text-align: right;
+			line-height: 1.5;
+		}
+
+	</style>
+</head>
+<body>
+
+	<div id="meta" class="header">
+		<b>Best Game Ever!</b><br>
+		<i>The pinnacle of gaming as we know it.</i><br>
+		<a href="http://git.io/bestgameever">http://git.io/bestgameever</a><br>
+		<a href="https://github.com/jdh11235/best_game_ever">[source code]</a>
+	</div>
+
+	<div id="stats" class="header">
+		won: <span class="stat" id="stat_win"></span><br>
+		lost: <span class="stat" id="stat_lose"></span><br>
+		times clicked: <span class="stat" id="stat_clicked"></span>
+	</div>
+
+	<div class="message game noselect" id="default">
+		<b>?</b><br>
+		[click to start game]
+	</div>
+
+	<div class="message game noselect" id="win" hidden>
+		<b>You Won!</b><br>
+		[click to play again]
+	</div>
+
+	<div class="message game noselect" id="lose" hidden>
+		<b>You Lost!</b><br>
+		[click to retry]
+	</div>
+
+	<script>
+
+		var Game = (function() {
+
+			var elms = {
+				all: document.querySelectorAll('.message'),
+				states: {
+					default: document.querySelector('#default'),
+					win: document.querySelector('#win'),
+					lose: document.querySelector('#lose')
+				},
+				stats: {
+					stat_win: document.querySelector('#stat_win'),
+					stat_lose: document.querySelector('#stat_lose'),
+					stat_clicked: document.querySelector('#stat_clicked')
+				}
+			};
+
+			var outcomes = ['win', 'lose'];
+
+			function randomFromRange (min, max) {
+				return Math.round(Math.random() * (max - min) + min);
+			}
+
+			function randomChoice(choices) {
+				return choices[randomFromRange(0, choices.length - 1)];
+			}
+
+			function hideElement(elm) {
+				elm.setAttribute('hidden', '');
+			}
+
+			function showElement(elm) {
+				elm.removeAttribute('hidden');
+			}
+
+			var Game = {
+
+				message: function(id) {
+					if (elms.states[id]) {
+						[].forEach.call(elms.all, hideElement);
+						showElement(elms.states[id]);
+					} else {
+						return 'Not a valid message id. Try one of these: ' + JSON.parse(elms.states);
+					}
+				},
+
+				start: function() {
+					if (Game.state === 'default') {
+						Game.state = randomChoice(outcomes);
+						Game.message(Game.state);
+						Game.stat.log(Game.state);
+					} else {
+						Game.state = 'default'
+						Game.message(Game.state);
+					}
+				},
+
+				stat: {
+
+					log: function(state) {
+						state = 'stat_' + state;
+						localStorage.setItem(state, Number(localStorage.getItem(state)) + 1);
+
+						elms.stats[state].innerHTML = localStorage.getItem(state);
+					},
+
+					get: function() {}
+
+				},
+
+				state: 'default'
+
+			};
+
+			return Game;
+
+		})();
+
+		function init() {
+			[].forEach.call(document.querySelectorAll('.game'), function(elm) {
+				elm.addEventListener('click', Game.start);
+			});
+
+			window.addEventListener('click', function() {
+				Game.stat.log('clicked');
+			});
+
+			if (!localStorage.stats) {
+				localStorage.stat_win = 0;
+				localStorage.stat_lose = 0;
+				localStorage.stat_clicked = 0;
+
+				localStorage.stats = true;
+			}
+
+			[].forEach.call(document.querySelectorAll('.stat'), function(elm) {
+				elm.innerHTML = localStorage.getItem(elm.id);
+			});
+		}
+
+		window.addEventListener('load', init);
+
+	</script>
+</body>
+</html>
